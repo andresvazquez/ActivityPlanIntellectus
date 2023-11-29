@@ -19,7 +19,7 @@ Este proyecto tiene como objetivo desarrollar una aplicación de gestión de act
 
 1. [Organización](#organización)
 2. [Problemática y Solución Propuesta](#problemática-y-solución-propuesta)
-3. [Desarrollo y Contribución](#desarrollo-y-contribución)
+3. [Etapas del Proyecto](#etapas-del-proyecto)
 4. [Licencia](#licencia)
 
 ## Organización
@@ -44,14 +44,6 @@ Este proyecto tiene como objetivo desarrollar una aplicación de gestión de act
    - Desarrollo de las funcionalidades restantes.
    - Integración de la interfaz de usuario intuitiva.
    - Pruebas y corrección de errores.
-
-### Desarrollo y Contribución
-
-1. Clona el repositorio: `git clone https://github.com/tuusuario/gestion-actividades.git`
-2. Crea una nueva rama: `git checkout -b nombre-de-la-rama`
-3. Realiza tus cambios y haz commit: `git commit -m "Descripción del cambio"`
-4. Envía tus cambios: `git push origin nombre-de-la-rama`
-5. Abre un Pull Request en GitHub.
 
 ### Licencia
 
