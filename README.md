@@ -47,5 +47,5 @@ Este proyecto tiene como objetivo desarrollar una aplicación de gestión de act
 
 ### Licencia
 
-Este proyecto está bajo la licencia MIT. Consulta el archivo [LICENSE.md](LICENSE.md) para obtener más detalles.
+Este proyecto está bajo la licencia [GNU General Public License v3.0](LICENSE.md). Consulta el archivo [LICENSE.md](LICENSE.md) para obtener más detalles.
 
