@@ -1,7 +1,6 @@
 package model;
 
 import java.sql.Connection;
-import java.sql.Date;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -156,6 +155,7 @@ public class BaseDeDatos {
 		int id_caso = -1;
 		int horas =-1;
 		String estado = null;
+		String prioridad=null;
 		if (idEmpleado != -1) {
 			try {
 				cn = conectar();
@@ -171,7 +171,8 @@ public class BaseDeDatos {
 					detalle = rs.getString("detalle");
 					horas =rs.getInt("horas");
 					estado = rs.getString("estado");
-					Asignacion asignacion = new Asignacion(id_asignacion, idEmpleado, fch_inicio, fch_fin,nombreAsignacion,detalle,id_req,id_caso,horas,estado);
+					prioridad=rs.getString("prioridad");
+					Asignacion asignacion = new Asignacion(id_asignacion, idEmpleado, fch_inicio, fch_fin,nombreAsignacion,detalle,id_req,id_caso,horas,estado,prioridad);
 					asignaciones.add(asignacion);
 				}
 			} catch (SQLException e) {
