@@ -1,0 +1,6 @@
+language: java
+jdk:
+  - openjdk11
+
+script:
+  - ./gradlew test  # Reemplaza con el comando para ejecutar tus pruebas JUnit
