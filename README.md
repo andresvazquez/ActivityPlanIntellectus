@@ -1,3 +1,4 @@
+![Build status](https://app.travis-ci.com/andresvazquez/ActivityPlanIntellectus.svg?branch=develop)
 # Activity Plan Intellectus
 
 # Proyecto de Gestión de Actividades
