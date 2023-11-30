@@ -459,5 +459,129 @@ public class BaseDeDatos {
 		return obtenerHorasRegistradasEnRango(id_asignacion, fechaInicio, fechaActual);
 	}
 
+	@SuppressWarnings("resource")
+	public static boolean realizarCambioEstado(int id_asignacion, String nuevoEstado, String comentario) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+
+		try {
+			cn = conectar();
+			// Obtener el estado actual de la asignación
+			String estadoAnterior = obtenerEstadoAsignacion(id_asignacion);
+
+			// Actualizar el estado en la tabla de asignaciones
+			String queryUpdate = "UPDATE intell.asignaciones SET estado = ? WHERE id_asignacion = ?";
+			ps = cn.prepareStatement(queryUpdate);
+			ps.setString(1, nuevoEstado);
+			ps.setInt(2, id_asignacion);
+			int filasAfectadas = ps.executeUpdate();
+
+			// Registrar la retroalimentación
+			if (filasAfectadas > 0) {
+				String queryInsert = "INSERT INTO intell.retroalimentaciones (id_asignacion, comentario, estado_anterior, estado_nuevo, fecha) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
+				ps = cn.prepareStatement(queryInsert);
+				ps.setInt(1, id_asignacion);
+				ps.setString(2, comentario);
+				ps.setString(3, estadoAnterior);
+				ps.setString(4, nuevoEstado);
+				ps.executeUpdate();
+			}
+
+			return filasAfectadas > 0;
+		} catch (SQLException e) {
+			System.out.println("Error al realizar cambio de estado: " + e.getMessage());
+		} finally {
+			try {
+				desconectar(cn);
+				if (ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return false;
+	}
+
+	// Método para obtener el estado actual de la asignación
+	public static String obtenerEstadoAsignacion(int id_asignacion) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		try {
+			cn = conectar();
+			String query = "SELECT estado FROM intell.asignaciones WHERE id_asignacion = ?";
+			ps = cn.prepareStatement(query);
+			ps.setInt(1, id_asignacion);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				return rs.getString("estado");
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener estado de asignación: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (cn != null) {
+					desconectar(cn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return null;
+	}
+
+	public static List<Retroalimentacion> obtenerRetroalimentacionesPorAsignacion(int id_asignacion) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Retroalimentacion> retroalimentaciones = new ArrayList<>();
+
+		try {
+			cn = conectar();
+			String query = "SELECT comentario, estado_anterior, estado_nuevo, fecha FROM intell.retroalimentaciones WHERE id_asignacion = ?";
+			ps = cn.prepareStatement(query);
+			ps.setInt(1, id_asignacion);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				String comentario = rs.getString("comentario");
+				String estadoAnterior = rs.getString("estado_anterior");
+				String estadoNuevo = rs.getString("estado_nuevo");
+				LocalDateTime fecha = rs.getObject("fecha", LocalDateTime.class);
+
+				Retroalimentacion retroalimentacion = new Retroalimentacion(comentario, estadoAnterior, estadoNuevo, fecha);
+				retroalimentaciones.add(retroalimentacion);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener retroalimentaciones por asignación: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (cn != null) {
+					desconectar(cn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return retroalimentaciones;
+	}
 
 }
