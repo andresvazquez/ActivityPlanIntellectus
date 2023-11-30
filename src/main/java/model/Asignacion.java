@@ -13,6 +13,8 @@ public class Asignacion {
 	private int id_req;
 	private int id_caso;
 	private int horas;
+	private String estado;
+	private String prioridad;
 	
 	public Asignacion() {
 		this.setId_asignacion(-1);
@@ -23,11 +25,13 @@ public class Asignacion {
 		this.setDetalle(null);
 		this.setId_req(-1);
 		this.setId_caso(-1);
-		this.setHoras(-1);
+		this.setHoras(0);
+		this.setEstado("backlog");
+		this.setPrioridad("bajo");
 	}
 
 	public Asignacion(int id_asignacion, int idEmpleado, LocalDate fch_inicio, LocalDate fch_fin,
-			String nombreAsignacion, String detalle, int id_req, int id_caso,int horas) {
+			String nombreAsignacion, String detalle, int id_req, int id_caso,int horas, String estado, String prioridad) {
 		this.setId_asignacion(id_asignacion);
 		this.setIdEmpleado(idEmpleado);
 		this.setFch_inicio(fch_inicio);
@@ -37,6 +41,8 @@ public class Asignacion {
 		this.setId_req(id_req);
 		this.setId_caso(id_caso);
 		this.setHoras(horas);
+		this.setEstado(estado);
+		this.setPrioridad(prioridad);
 	}
 
 	public int getId_asignacion() {
@@ -109,6 +115,22 @@ public class Asignacion {
 
 	public void setHoras(int horas) {
 		this.horas = horas;
+	}
+
+	public String getEstado() {
+		return estado;
+	}
+
+	public void setEstado(String estado) {
+		this.estado = estado;
+	}
+
+	public String getPrioridad() {
+		return prioridad;
+	}
+
+	public void setPrioridad(String prioridad) {
+		this.prioridad = prioridad;
 	}
 
 }
