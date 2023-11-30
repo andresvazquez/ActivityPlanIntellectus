@@ -10,6 +10,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -87,7 +88,7 @@ public class BaseDeDatos {
 		}
 		return false;
 	}
-	
+
 	public static Empleado obtenerEmpleadoPorNombre(String nombreUsuario) {
 		Connection cn = null;
 		PreparedStatement ps = null;
@@ -153,6 +154,7 @@ public class BaseDeDatos {
 		int id_asignacion = -1;
 		int id_req = -1;
 		int id_caso = -1;
+		int horas =-1;
 		if (idEmpleado != -1) {
 			try {
 				cn = conectar();
@@ -165,8 +167,9 @@ public class BaseDeDatos {
 					id_asignacion = rs.getInt("id_asignacion");
 					id_req = rs.getInt("id_req");
 					id_caso = rs.getInt("id_caso");
-					detalle = rs.getString("detalle")
-					Asignacion asignacion = new Asignacion(id_asignacion, idEmpleado, fch_inicio, fch_fin,nombreAsignacion,detalle,id_req,id_caso);
+					detalle = rs.getString("detalle");
+					horas =rs.getInt("horas");
+					Asignacion asignacion = new Asignacion(id_asignacion, idEmpleado, fch_inicio, fch_fin,nombreAsignacion,detalle,id_req,id_caso,horas);
 					asignaciones.add(asignacion);
 				}
 			} catch (SQLException e) {
@@ -198,8 +201,8 @@ public class BaseDeDatos {
 				String query = "INSERT INTO intell.asignaciones (id_empleado, fch_inicio, fch_fin, nombre_asignacion, detalle, id_req, id_caso) VALUES (?, ?, ?, ?, ?, ?, ?)";
 				ps = cn.prepareStatement(query);
 				ps.setInt(1, idEmpleado);
-	            ps.setDate(2, java.sql.Date.valueOf(fch_inicio));
-	            ps.setDate(3, java.sql.Date.valueOf(fch_fin));
+				ps.setDate(2, java.sql.Date.valueOf(fch_inicio));
+				ps.setDate(3, java.sql.Date.valueOf(fch_fin));
 				ps.setString(4, nombre_asignacion);
 				ps.setString(5, detalle);
 				ps.setInt(6, id_req);
@@ -224,34 +227,34 @@ public class BaseDeDatos {
 	}
 
 	public static boolean realizarAsignacionExistente(String nombreUsuario, int id_asignacion) {
-	    Connection cn = null;
-	    Statement stm = null;
-	    int idEmpleado = obtenerEmpleadoPorNombre(nombreUsuario).getIdEmpleado();
+		Connection cn = null;
+		Statement stm = null;
+		int idEmpleado = obtenerEmpleadoPorNombre(nombreUsuario).getIdEmpleado();
 
-	    if (idEmpleado != -1) {
-	        try {
-	            cn = conectar();
-	            stm = cn.createStatement();
-	            String query = "UPDATE intell.asignaciones SET id_empleado = '" + idEmpleado + "' WHERE id_asignacion = '" + id_asignacion + "'";
-	            int filasAfectadas = stm.executeUpdate(query);
-	            return filasAfectadas > 0;
-	        } catch (SQLException e) {
-	            System.out.println("Error al realizar asignación existente: " + e.getMessage());
-	        } finally {
-	            try {
-	                if (stm != null) {
-	                    stm.close();
-	                }
-	                desconectar(cn);
-	            } catch (SQLException e) {
-	                e.printStackTrace();
-	            }
-	        }
-	    } else {
-	        System.out.println("El empleado no existe en la tabla empleados.");
-	    }
+		if (idEmpleado != -1) {
+			try {
+				cn = conectar();
+				stm = cn.createStatement();
+				String query = "UPDATE intell.asignaciones SET id_empleado = '" + idEmpleado + "' WHERE id_asignacion = '" + id_asignacion + "'";
+				int filasAfectadas = stm.executeUpdate(query);
+				return filasAfectadas > 0;
+			} catch (SQLException e) {
+				System.out.println("Error al realizar asignación existente: " + e.getMessage());
+			} finally {
+				try {
+					if (stm != null) {
+						stm.close();
+					}
+					desconectar(cn);
+				} catch (SQLException e) {
+					e.printStackTrace();
+				}
+			}
+		} else {
+			System.out.println("El empleado no existe en la tabla empleados.");
+		}
 
-	    return false;
+		return false;
 	}
 
 
@@ -286,58 +289,171 @@ public class BaseDeDatos {
 		return false;
 	}
 
-	
-	public static boolean registrarRequerimiento(String folio, String detalle) {
-	    Connection cn = null;
-	    PreparedStatement ps = null;
 
-	    try {
-	        cn = conectar();
-	        String query = "INSERT INTO intell.requerimientos (folio, detalle) VALUES (?, ?)";
-	        ps = cn.prepareStatement(query);
-	        ps.setString(1, folio);
-	        ps.setString(2, detalle);
-	        int filasAfectadas = ps.executeUpdate();
-	        return filasAfectadas > 0;
-	    } catch (SQLException e) {
-	        System.out.println("Error al registrar requerimiento: " + e.getMessage());
-	    } finally {
-	        try {
-	            desconectar(cn);
-	            if (ps != null) {
-	                ps.close();
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
-	    return false;
+	public static boolean registrarRequerimiento(String folio, String detalle) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+
+		try {
+			cn = conectar();
+			String query = "INSERT INTO intell.requerimientos (folio, detalle) VALUES (?, ?)";
+			ps = cn.prepareStatement(query);
+			ps.setString(1, folio);
+			ps.setString(2, detalle);
+			int filasAfectadas = ps.executeUpdate();
+			return filasAfectadas > 0;
+		} catch (SQLException e) {
+			System.out.println("Error al registrar requerimiento: " + e.getMessage());
+		} finally {
+			try {
+				desconectar(cn);
+				if (ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
 	}
 
 	public static boolean registrarCasoDeUso(String detalle) {
-	    Connection cn = null;
-	    PreparedStatement ps = null;
+		Connection cn = null;
+		PreparedStatement ps = null;
 
-	    try {
-	        cn = conectar();
-	        String query = "INSERT INTO intell.casosdeuso (detalle) VALUES (?)";
-	        ps = cn.prepareStatement(query);
-	        ps.setString(1, detalle);
-	        int filasAfectadas = ps.executeUpdate();
-	        return filasAfectadas > 0;
-	    } catch (SQLException e) {
-	        System.out.println("Error al registrar caso de uso: " + e.getMessage());
-	    } finally {
-	        try {
-	            desconectar(cn);
-	            if (ps != null) {
-	                ps.close();
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
-	    return false;
+		try {
+			cn = conectar();
+			String query = "INSERT INTO intell.casosdeuso (detalle) VALUES (?)";
+			ps = cn.prepareStatement(query);
+			ps.setString(1, detalle);
+			int filasAfectadas = ps.executeUpdate();
+			return filasAfectadas > 0;
+		} catch (SQLException e) {
+			System.out.println("Error al registrar caso de uso: " + e.getMessage());
+		} finally {
+			try {
+				desconectar(cn);
+				if (ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+
+	public static boolean registrarHorasTrabajadas(int id_asignacion, int horas) {
+		Connection cn = null;
+		PreparedStatement psAsignaciones = null;
+		PreparedStatement psHorasTrabajadas = null;
+
+		try {
+			cn = conectar();
+			cn.setAutoCommit(false);  // Deshabilitar la confirmación automática para transacción
+
+			// Actualizar horas en la tabla asignaciones
+			String queryAsignaciones = "UPDATE intell.asignaciones SET horas = horas + ? WHERE id_asignacion = ?";
+			psAsignaciones = cn.prepareStatement(queryAsignaciones);
+			psAsignaciones.setInt(1, horas);
+			psAsignaciones.setInt(2, id_asignacion);
+			int filasAfectadasAsignaciones = psAsignaciones.executeUpdate();
+
+			// Insertar registro en la tabla horas_trabajadas
+			String queryHorasTrabajadas = "INSERT INTO intell.horas_trabajadas (horas, fch_captura, id_asignacion) VALUES (?, ?, ?)";
+			psHorasTrabajadas = cn.prepareStatement(queryHorasTrabajadas);
+			psHorasTrabajadas.setInt(1, horas);
+			psHorasTrabajadas.setTimestamp(2, Timestamp.valueOf(LocalDateTime.now()));
+			psHorasTrabajadas.setInt(3, id_asignacion);
+			int filasAfectadasHorasTrabajadas = psHorasTrabajadas.executeUpdate();
+
+			// Confirmar la transacción
+			cn.commit();
+			cn.setAutoCommit(true);  // Restaurar la confirmación automática
+
+			return filasAfectadasAsignaciones > 0 && filasAfectadasHorasTrabajadas > 0;
+		} catch (SQLException e) {
+			// Manejar errores y revertir la transacción si es necesario
+			try {
+				if (cn != null) {
+					cn.rollback();
+					cn.setAutoCommit(true);  // Restaurar la confirmación automática en caso de rollback
+				}
+			} catch (SQLException rollbackException) {
+				rollbackException.printStackTrace();
+			}
+
+			System.out.println("Error al registrar horas trabajadas: " + e.getMessage());
+		} finally {
+			try {
+				if (psAsignaciones != null) {
+					psAsignaciones.close();
+				}
+				if (psHorasTrabajadas != null) {
+					psHorasTrabajadas.close();
+				}
+				desconectar(cn);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+		return false;
+	}
+
+	public static int obtenerHorasRegistradasEnRango(int id_asignacion, LocalDate fechaInicio, LocalDate fechaFin) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		int totalHoras = 0;
+
+		try {
+			cn = conectar();
+			String query = "SELECT horas FROM intell.horas_trabajadas WHERE id_asignacion = ? AND fch_captura BETWEEN ? AND ?";
+			ps = cn.prepareStatement(query);
+			ps.setInt(1, id_asignacion);
+			ps.setTimestamp(2, Timestamp.valueOf(LocalDateTime.of(fechaInicio, LocalDateTime.MIN.toLocalTime())));
+			ps.setTimestamp(3, Timestamp.valueOf(LocalDateTime.of(fechaFin, LocalDateTime.MAX.toLocalTime())));
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				totalHoras += rs.getInt("horas");
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener horas registradas en rango: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				desconectar(cn);
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return totalHoras;
+	}
+
+	public static int obtenerHorasRegistradasEnUltimoDia(int id_asignacion) {
+		LocalDate fechaActual = LocalDate.now();
+		LocalDate fechaInicio = fechaActual.minus(1, ChronoUnit.DAYS);
+		return obtenerHorasRegistradasEnRango(id_asignacion, fechaInicio, fechaActual);
+	}
+
+	public static int obtenerHorasRegistradasEnUltimaSemana(int id_asignacion) {
+		LocalDate fechaActual = LocalDate.now();
+		LocalDate fechaInicio = fechaActual.minus(1, ChronoUnit.WEEKS);
+		return obtenerHorasRegistradasEnRango(id_asignacion, fechaInicio, fechaActual);
+	}
+
+	public static int obtenerHorasRegistradasEnUltimoMes(int id_asignacion) {
+		LocalDate fechaActual = LocalDate.now();
+		LocalDate fechaInicio = fechaActual.minus(1, ChronoUnit.MONTHS);
+		return obtenerHorasRegistradasEnRango(id_asignacion, fechaInicio, fechaActual);
 	}
 
 
