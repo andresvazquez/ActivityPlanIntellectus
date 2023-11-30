@@ -155,6 +155,7 @@ public class BaseDeDatos {
 		int id_req = -1;
 		int id_caso = -1;
 		int horas =-1;
+		String estado = null;
 		if (idEmpleado != -1) {
 			try {
 				cn = conectar();
@@ -169,7 +170,8 @@ public class BaseDeDatos {
 					id_caso = rs.getInt("id_caso");
 					detalle = rs.getString("detalle");
 					horas =rs.getInt("horas");
-					Asignacion asignacion = new Asignacion(id_asignacion, idEmpleado, fch_inicio, fch_fin,nombreAsignacion,detalle,id_req,id_caso,horas);
+					estado = rs.getString("estado");
+					Asignacion asignacion = new Asignacion(id_asignacion, idEmpleado, fch_inicio, fch_fin,nombreAsignacion,detalle,id_req,id_caso,horas,estado);
 					asignaciones.add(asignacion);
 				}
 			} catch (SQLException e) {
@@ -198,7 +200,7 @@ public class BaseDeDatos {
 		if (idEmpleado != -1) {
 			try {
 				cn = conectar();
-				String query = "INSERT INTO intell.asignaciones (id_empleado, fch_inicio, fch_fin, nombre_asignacion, detalle, id_req, id_caso) VALUES (?, ?, ?, ?, ?, ?, ?)";
+				String query = "INSERT INTO intell.asignaciones (id_empleado, fch_inicio, fch_fin, nombre_asignacion, detalle, id_req, id_caso, estado, prioridad) VALUES (?, ?, ?, ?, ?, ?, ?, 'backlog', 'baja')";
 				ps = cn.prepareStatement(query);
 				ps.setInt(1, idEmpleado);
 				ps.setDate(2, java.sql.Date.valueOf(fch_inicio));

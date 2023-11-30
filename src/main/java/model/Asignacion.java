@@ -13,6 +13,7 @@ public class Asignacion {
 	private int id_req;
 	private int id_caso;
 	private int horas;
+	private String estado;
 	
 	public Asignacion() {
 		this.setId_asignacion(-1);
@@ -24,10 +25,11 @@ public class Asignacion {
 		this.setId_req(-1);
 		this.setId_caso(-1);
 		this.setHoras(-1);
+		this.estado=null;
 	}
 
 	public Asignacion(int id_asignacion, int idEmpleado, LocalDate fch_inicio, LocalDate fch_fin,
-			String nombreAsignacion, String detalle, int id_req, int id_caso,int horas) {
+			String nombreAsignacion, String detalle, int id_req, int id_caso,int horas, String estado) {
 		this.setId_asignacion(id_asignacion);
 		this.setIdEmpleado(idEmpleado);
 		this.setFch_inicio(fch_inicio);
@@ -37,6 +39,7 @@ public class Asignacion {
 		this.setId_req(id_req);
 		this.setId_caso(id_caso);
 		this.setHoras(horas);
+		this.estado= estado;
 	}
 
 	public int getId_asignacion() {
