@@ -1,5 +1,4 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8"
-	pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
 <%@ page import="model.Empleado"%>
 <%@ page import="model.Asignacion"%>
 <%@ page import="java.util.List"%>
@@ -95,6 +94,28 @@ select {
 	box-sizing: border-box;
 }
 
+.table-container {
+  max-height: 200px;
+  overflow-y: auto;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid white;
+  padding: 8px;
+  text-align: left;
+}
+
+a {
+  color: #007BFF; /* Color azul */
+  text-decoration: underline; /* Subrayado */
+}
+
 .card ul {
 	list-style-type: none;
 	padding: 0;
@@ -138,21 +159,35 @@ select {
 		</div>
 		<div class="card">
 			<h3>Asignaciones:</h3>
-			<ul>
-				<%
-				for (Asignacion asign : asignaciones) {
-				%>
-				<li>-<%=asign.getNombreAsignacion() %></li>
-				<%
-				}
-				%>
-			</ul>
+			<div class="table-container">
+				<table>
+					<tr>
+						<th>Nombre Asignación</th>
+						<th>Detalle</th>
+						<th>Fecha Inicio</th>
+						<th>Fecha Fin</th>
+						<th>Horas</th>
+						<th>Estado</th>
+						<th>Prioridad</th>
+					</tr>
+					<%
+					for (Asignacion asign : asignaciones) {
+					%>
+					<tr>
+						<td><a href="detalleAsignacion.jsp?id=<%=asign.getId_asignacion()%>"><%=asign.getNombreAsignacion()%></a></td>
+						<td><%=asign.getDetalle()%></td>
+						<td><%=asign.getFch_inicio()%></td>
+						<td><%=asign.getFch_fin()%></td>
+						<td><%=asign.getHoras()%></td>
+						<td><%=asign.getEstado()%></td>
+						<td><%=asign.getPrioridad()%></td>
+					</tr>
+					<%
+					}
+					%>
+				</table>
+			</div>
 
-			<select name="asignaciones" id="asignacionesDropdown">
-				<% for (Asignacion asign : asignaciones) { %>
-				<option value="<%= asign.getId_asignacion() %>"><%= asign.getNombreAsignacion() %></option>
-				<% } %>
-			</select>
 		</div>
 	</div>
 </body>
