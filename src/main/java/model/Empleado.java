@@ -7,6 +7,7 @@ public class Empleado {
 
 	private String nombreCompleto,nombreUsuario,contrasena,sexo,correo,telefono;
 	private int edad,idEmpleado;
+	private int es_admin;
 	private LocalDate fechaNacimiento;
 
 	public Empleado() {
@@ -19,9 +20,10 @@ public class Empleado {
 		this.fechaNacimiento=null;
 		this.correo=null;
 		this.telefono=null;
+		this.setEs_admin(0);
 	}
 
-	public Empleado(String nombreCompleto, String nombreUsuario, String contrasena, String sexo, int edad, int idEmpleado, LocalDate fechaNacimiento, String correo, String telefono) {
+	public Empleado(String nombreCompleto, String nombreUsuario, String contrasena, String sexo, int edad, int idEmpleado, LocalDate fechaNacimiento, String correo, String telefono, int es_admin) {
 		this.nombreCompleto=nombreCompleto;
 		this.nombreUsuario=nombreUsuario;
 		this.contrasena=contrasena;
@@ -31,6 +33,7 @@ public class Empleado {
 		this.fechaNacimiento = fechaNacimiento;
 		this.correo = correo;
 		this.telefono=telefono;
+		this.setEs_admin(es_admin);
 	}
 
 	public String getNombreCompleto() {
@@ -99,5 +102,13 @@ public class Empleado {
 
 	public void setTelefono(String telefono) {
 		this.telefono = telefono;
+	}
+
+	public int getEs_admin() {
+		return es_admin;
+	}
+
+	public void setEs_admin(int es_admin) {
+		this.es_admin = es_admin;
 	}
 }

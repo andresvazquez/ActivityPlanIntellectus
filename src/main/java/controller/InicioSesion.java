@@ -1,6 +1,8 @@
 package controller;
 
 import java.io.IOException;
+import java.util.List;
+
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
@@ -33,7 +35,9 @@ public class InicioSesion extends HttpServlet {
 		if(respuesta) {
 			model.Empleado Empleado = model.BaseDeDatos.obtenerEmpleadoPorNombre(usuario);
 			session.setAttribute("Empleado", Empleado);
-			request.getRequestDispatcher("/.jsp").forward(request, response);
+			List<model.Asignacion> asignaciones = model.BaseDeDatos.obtenerAsignacionesEmpleado(Empleado.getNombreUsuario());
+			session.setAttribute("asignaciones", asignaciones);
+			request.getRequestDispatcher("/dashboard.jsp").forward(request, response);
 			
 		}else {
 			request.setAttribute("error", "Credenciales incorrectas. Por favor, inténtalo de nuevo.");
