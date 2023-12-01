@@ -8,7 +8,7 @@ public class Conexion {
 
 	private static String usuario = "root";
 	private static String contrasena = "andresgdl2001";
-	private static String url = "jdbc:mysql://localhost:3306/evimc";
+	private static String url = "jdbc:mysql://localhost:3306/intell";
 
 	public static Connection conectar(){
 		Connection connection=null;

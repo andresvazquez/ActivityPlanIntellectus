@@ -17,7 +17,7 @@ public class BaseDeDatos {
 
 	private static String usuario = "root";
 	private static String contrasena = "andresgdl2001";
-	private static String url = "jdbc:mysql://localhost:3306/evimc";
+	private static String url = "jdbc:mysql://localhost:3306/intell";
 
 
 	public static Connection conectar(){
@@ -100,10 +100,11 @@ public class BaseDeDatos {
 		String correo = null;
 		String telefono = null;
 		int edad = -1;
+		int es_admin = 0;
 		Empleado empleado;
 		try {
 			cn = conectar();
-			String query = "SELECT * FROM empleados WHERE nombre_usuario = ?";
+			String query = "SELECT * FROM intell.empleados WHERE nombre_usuario = ?";
 			ps = cn.prepareStatement(query);
 			ps.setString(1, nombreUsuario);
 			rs = ps.executeQuery();
@@ -115,9 +116,10 @@ public class BaseDeDatos {
 				sexo = rs.getString("sexo");
 				correo = rs.getString("correo");
 				telefono = rs.getString("telefono");
+				es_admin = rs.getInt("es_admin");
 				fechaNacimiento = rs.getObject("fecha_nacimiento", LocalDate.class);
 			}
-			empleado = new Empleado(nombreCompleto,nombreUsuario,contrasena,sexo,edad,idEmpleado,fechaNacimiento,correo,telefono);
+			empleado = new Empleado(nombreCompleto,nombreUsuario,contrasena,sexo,edad,idEmpleado,fechaNacimiento,correo,telefono,es_admin);
 		} catch (SQLException e) {
 			System.out.println("Error al obtener el Empleado a partir del usuario: " + e.getMessage());
 			empleado = new Empleado();
@@ -172,6 +174,7 @@ public class BaseDeDatos {
 					horas =rs.getInt("horas");
 					estado = rs.getString("estado");
 					prioridad=rs.getString("prioridad");
+					nombreAsignacion =rs.getString("nombre_asignacion");
 					Asignacion asignacion = new Asignacion(id_asignacion, idEmpleado, fch_inicio, fch_fin,nombreAsignacion,detalle,id_req,id_caso,horas,estado,prioridad);
 					asignaciones.add(asignacion);
 				}
