@@ -41,10 +41,10 @@ public class AltaEmpleado extends HttpServlet {
         
         if (respuesta) {
         	request.setAttribute("success", "Empleado registrado correctamente.");
-            request.getRequestDispatcher("/altaEmpleado.jsp").forward(request, response);
+            
         } else {
         	request.setAttribute("error", "Error al registrar empleado. Intenta de nuevo.");
-            request.getRequestDispatcher("/altaEmpleado.jsp").forward(request, response);
         }
+        request.getRequestDispatcher("/altaEmpleado.jsp").forward(request, response);
     }
 }
