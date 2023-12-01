@@ -4,19 +4,22 @@ import java.time.LocalDateTime;
 
 public class Retroalimentacion {
 	
+	private String autor;
 	private String comentario;
 	private String estadoAnterior;
 	private String estadoNuevo;
 	private LocalDateTime fecha;
 	
 	public Retroalimentacion() {
+		this.setAutor(null);
 		this.setComentario(null);
 		this.setEstadoAnterior("backlog");
 		this.setEstadoNuevo("backlog");
 		this.setFecha(null);
 	}
 
-	public Retroalimentacion(String comentario, String estadoAnterior, String estadoNuevo, LocalDateTime fecha) {
+	public Retroalimentacion(String autor,String comentario, String estadoAnterior, String estadoNuevo, LocalDateTime fecha) {
+		this.setAutor(autor);
 		this.setComentario(comentario);
 		this.setEstadoAnterior(estadoAnterior);
 		this.setEstadoNuevo(estadoNuevo);
@@ -53,6 +56,14 @@ public class Retroalimentacion {
 
 	public void setFecha(LocalDateTime fecha) {
 		this.fecha = fecha;
+	}
+
+	public String getAutor() {
+		return autor;
+	}
+
+	public void setAutor(String autor) {
+		this.autor = autor;
 	}
 
 }

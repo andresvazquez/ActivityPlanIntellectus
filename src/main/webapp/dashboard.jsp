@@ -1,4 +1,5 @@
-<%@ page language="java" contentType="text/html; charset=UTF-8" pageEncoding="UTF-8"%>
+<%@ page language="java" contentType="text/html; charset=UTF-8"
+	pageEncoding="UTF-8"%>
 <%@ page import="model.Empleado"%>
 <%@ page import="model.Asignacion"%>
 <%@ page import="java.util.List"%>
@@ -30,7 +31,8 @@ body {
 	font-family: Arial, sans-serif;
 	margin: 0;
 	padding: 0;
-	overflow: hidden;
+	overflow: auto;
+	background-color: #001f3f;
 }
 
 body::before {
@@ -72,6 +74,7 @@ body::before {
 	margin-left: 250px;
 	padding: 20px;
 	color: white;
+	min-height: 100vh;
 }
 
 .card {
@@ -80,6 +83,7 @@ body::before {
 	margin: 20px;
 	border-radius: 8px;
 	box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+	overflow: hidden;
 }
 
 .card h3 {
@@ -95,25 +99,27 @@ select {
 }
 
 .table-container {
-  max-height: 200px;
-  overflow-y: auto;
+	max-height: 300px;
+	overflow-y: auto;
 }
 
 table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
+	width: 100%;
+	table-layout: fixed;
+	border-collapse: collapse;
+	margin-top: 10px;
 }
 
 th, td {
-  border: 1px solid white;
-  padding: 8px;
-  text-align: left;
+	border: 1px solid white;
+	padding: 8px;
+	text-align: left;
+	overflow-x: auto;
 }
 
 a {
-  color: #007BFF; /* Color azul */
-  text-decoration: underline; /* Subrayado */
+	color: #007BFF; /* Color azul */
+	text-decoration: underline; /* Subrayado */
 }
 
 .card ul {
@@ -122,6 +128,17 @@ a {
 	margin: 0;
 	overflow-y: auto;
 	max-height: 100px;
+}
+
+.long-field-cell {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+}
+
+.scrollable-cell {
+	max-height: 50px !important;
+	overflow-y: auto !important;
+	overflow-x: auto !important;
 }
 </style>
 </head>
@@ -141,7 +158,7 @@ a {
 		<%
 		}
 		%>
-		<a href="visualizarAsignaciones.jsp">Visualizar mis asignaciones </a>
+		
 	</div>
 
 	<div class="content">
@@ -174,8 +191,9 @@ a {
 					for (Asignacion asign : asignaciones) {
 					%>
 					<tr>
-						<td><a href="detalleAsignacion.jsp?id=<%=asign.getId_asignacion()%>"><%=asign.getNombreAsignacion()%></a></td>
-						<td><%=asign.getDetalle()%></td>
+						<td class="long-field-cell scrollable-cell"><a
+							href="detalleAsignacion.jsp?id=<%=asign.getId_asignacion()%>"><%=asign.getNombreAsignacion()%></a></td>
+						<td class="long-field-cell scrollable-cell"><%=asign.getDetalle()%></td>
 						<td><%=asign.getFch_inicio()%></td>
 						<td><%=asign.getFch_fin()%></td>
 						<td><%=asign.getHoras()%></td>

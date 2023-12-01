@@ -433,49 +433,55 @@ public class BaseDeDatos {
 	}
 
 	@SuppressWarnings("resource")
-	public static boolean realizarCambioEstado(int id_asignacion, String nuevoEstado, String comentario) {
-		Connection cn = null;
-		PreparedStatement ps = null;
+	public static boolean realizarCambioEstado(String autor, int id_asignacion, String nuevoEstado, String nuevaPrioridad, String comentario) {
+	    Connection cn = null;
+	    PreparedStatement ps = null;
 
-		try {
-			cn = conectar();
-			// Obtener el estado actual de la asignación
-			String estadoAnterior = obtenerEstadoAsignacion(id_asignacion);
+	    try {
+	        cn = conectar();
+	        // Obtener el estado y la prioridad actual de la asignación
+	        String estadoAnterior = obtenerEstadoAsignacion(id_asignacion);
+	        if(estadoAnterior==null) {
+	        	estadoAnterior="backlog";
+	        }
 
-			// Actualizar el estado en la tabla de asignaciones
-			String queryUpdate = "UPDATE intell.asignaciones SET estado = ? WHERE id_asignacion = ?";
-			ps = cn.prepareStatement(queryUpdate);
-			ps.setString(1, nuevoEstado);
-			ps.setInt(2, id_asignacion);
-			int filasAfectadas = ps.executeUpdate();
+	        // Actualizar el estado y la prioridad en la tabla de asignaciones
+	        String queryUpdate = "UPDATE intell.asignaciones SET estado = ?, prioridad = ? WHERE id_asignacion = ?";
+	        ps = cn.prepareStatement(queryUpdate);
+	        ps.setString(1, nuevoEstado);
+	        ps.setString(2, nuevaPrioridad);
+	        ps.setInt(3, id_asignacion);
+	        int filasAfectadas = ps.executeUpdate();
 
-			// Registrar la retroalimentación
-			if (filasAfectadas > 0) {
-				String queryInsert = "INSERT INTO intell.retroalimentaciones (id_asignacion, comentario, estado_anterior, estado_nuevo, fecha) VALUES (?, ?, ?, ?, CURRENT_TIMESTAMP)";
-				ps = cn.prepareStatement(queryInsert);
-				ps.setInt(1, id_asignacion);
-				ps.setString(2, comentario);
-				ps.setString(3, estadoAnterior);
-				ps.setString(4, nuevoEstado);
-				ps.executeUpdate();
-			}
+	        // Registrar la retroalimentación
+	        if (filasAfectadas > 0) {
+	            String queryInsert = "INSERT INTO intell.retroalimentaciones (id_asignacion, autor, comentario, estado_anterior, estado_nuevo, fecha) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
+	            ps = cn.prepareStatement(queryInsert);
+	            ps.setInt(1, id_asignacion);
+	            ps.setString(2, autor);
+	            ps.setString(3, comentario);
+	            ps.setString(4, estadoAnterior);
+	            ps.setString(5, nuevoEstado);
+	            ps.executeUpdate();
+	        }
 
-			return filasAfectadas > 0;
-		} catch (SQLException e) {
-			System.out.println("Error al realizar cambio de estado: " + e.getMessage());
-		} finally {
-			try {
-				desconectar(cn);
-				if (ps != null) {
-					ps.close();
-				}
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-		}
+	        return filasAfectadas > 0;
+	    } catch (SQLException e) {
+	        System.out.println("Error al realizar cambio de estado: " + e.getMessage());
+	    } finally {
+	        try {
+	            desconectar(cn);
+	            if (ps != null) {
+	                ps.close();
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
 
-		return false;
+	    return false;
 	}
+
 
 	public static String obtenerEstadoAsignacion(int id_asignacion) {
 		Connection cn = null;
@@ -521,18 +527,19 @@ public class BaseDeDatos {
 
 		try {
 			cn = conectar();
-			String query = "SELECT comentario, estado_anterior, estado_nuevo, fecha FROM intell.retroalimentaciones WHERE id_asignacion = ?";
+			String query = "SELECT autor, comentario, estado_anterior, estado_nuevo, fecha FROM intell.retroalimentaciones WHERE id_asignacion = ?";
 			ps = cn.prepareStatement(query);
 			ps.setInt(1, id_asignacion);
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
+				String autor = rs.getString("autor");
 				String comentario = rs.getString("comentario");
 				String estadoAnterior = rs.getString("estado_anterior");
 				String estadoNuevo = rs.getString("estado_nuevo");
 				LocalDateTime fecha = rs.getObject("fecha", LocalDateTime.class);
 
-				Retroalimentacion retroalimentacion = new Retroalimentacion(comentario, estadoAnterior, estadoNuevo, fecha);
+				Retroalimentacion retroalimentacion = new Retroalimentacion(autor,comentario, estadoAnterior, estadoNuevo, fecha);
 				retroalimentaciones.add(retroalimentacion);
 			}
 		} catch (SQLException e) {
@@ -757,6 +764,55 @@ public class BaseDeDatos {
 
 	    return casosDeUso;
 	}
+	
+	public static Asignacion obtenerAsignacionPorId(int idAsignacion) {
+	    Connection cn = null;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
+	    Asignacion asignacion = null;
+
+	    try {
+	        cn = conectar();
+	        String query = "SELECT * FROM intell.asignaciones WHERE id_asignacion = ?";
+	        ps = cn.prepareStatement(query);
+	        ps.setInt(1, idAsignacion);
+	        rs = ps.executeQuery();
+
+	        if (rs.next()) {
+	            int idEmpleado = rs.getInt("id_empleado");
+	            LocalDate fchInicio = rs.getObject("fch_inicio", LocalDate.class);
+	            LocalDate fchFin = rs.getObject("fch_fin", LocalDate.class);
+	            String nombreAsignacion = rs.getString("nombre_asignacion");
+	            String detalle = rs.getString("detalle");
+	            int idReq = rs.getInt("id_req");
+	            int idCaso = rs.getInt("id_caso");
+	            int horas = rs.getInt("horas");
+	            String estado = rs.getString("estado");
+	            String prioridad = rs.getString("prioridad");
+
+	            asignacion = new Asignacion(idAsignacion, idEmpleado, fchInicio, fchFin, nombreAsignacion, detalle, idReq, idCaso, horas, estado, prioridad);
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Error al obtener asignación por ID: " + e.getMessage());
+	    } finally {
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (ps != null) {
+	                ps.close();
+	            }
+	            if (cn != null) {
+	                desconectar(cn);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return asignacion;
+	}
+
 
 
 }
