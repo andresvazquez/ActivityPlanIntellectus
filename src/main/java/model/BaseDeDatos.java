@@ -588,5 +588,137 @@ public class BaseDeDatos {
 
 		return retroalimentaciones;
 	}
+	
+	public static List<Empleado> obtenerTodosLosEmpleados() {
+	    Connection cn = null;
+	    Statement stm = null;
+	    ResultSet rs = null;
+	    List<Empleado> empleados = new ArrayList<>();
+
+	    try {
+	        cn = conectar();
+	        stm = cn.createStatement();
+	        String query = "SELECT * FROM intell.empleados";
+	        rs = stm.executeQuery(query);
+
+	        while (rs.next()) {
+	            int idEmpleado = rs.getInt("id_empleado");
+	            String nombreCompleto = rs.getString("nombre_completo");
+	            String nombreUsuario = rs.getString("nombre_usuario");
+	            String contrasena = rs.getString("contrasena");
+	            int edad = rs.getInt("edad");
+	            String sexo = rs.getString("sexo");
+	            String correo = rs.getString("correo");
+	            String telefono = rs.getString("telefono");
+	            int esAdmin = rs.getInt("es_admin");
+	            LocalDate fechaNacimiento = rs.getObject("fecha_nacimiento", LocalDate.class);
+
+	            Empleado empleado = new Empleado(nombreCompleto, nombreUsuario, contrasena, sexo, edad, idEmpleado, fechaNacimiento, correo, telefono, esAdmin);
+	            empleados.add(empleado);
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Error al obtener todos los empleados: " + e.getMessage());
+	    } finally {
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (stm != null) {
+	                stm.close();
+	            }
+	            if (cn != null) {
+	                desconectar(cn);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return empleados;
+	}
+	
+	public static List<Asignacion> obtenerTodasLasAsignaciones() {
+	    Connection cn = null;
+	    Statement stm = null;
+	    ResultSet rs = null;
+	    List<Asignacion> asignaciones = new ArrayList<>();
+
+	    try {
+	        cn = conectar();
+	        stm = cn.createStatement();
+	        String query = "SELECT * FROM intell.asignaciones";
+	        rs = stm.executeQuery(query);
+
+	        while (rs.next()) {
+	            int idEmpleado = rs.getInt("id_empleado");
+	            LocalDate fchInicio = rs.getObject("fch_inicio", LocalDate.class);
+	            LocalDate fchFin = rs.getObject("fch_fin", LocalDate.class);
+	            String nombreAsignacion = rs.getString("nombre_asignacion");
+	            String detalle = rs.getString("detalle");
+	            int idReq = rs.getInt("id_req");
+	            int idCaso = rs.getInt("id_caso");
+	            int horas = rs.getInt("horas");
+	            String estado = rs.getString("estado");
+	            String prioridad = rs.getString("prioridad");
+	            int idAsignacion = rs.getInt("id_asignacion");
+
+	            Asignacion asignacion = new Asignacion(idAsignacion, idEmpleado, fchInicio, fchFin, nombreAsignacion, detalle, idReq, idCaso, horas, estado, prioridad);
+	            asignaciones.add(asignacion);
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Error al obtener todas las asignaciones: " + e.getMessage());
+	    } finally {
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (stm != null) {
+	                stm.close();
+	            }
+	            if (cn != null) {
+	                desconectar(cn);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return asignaciones;
+	}
+	
+	public static boolean asignarAsignacionAEmpleado(int idEmpleado, int idAsignacion) {
+	    Connection cn = null;
+	    PreparedStatement ps = null;
+
+	    try {
+	        cn = conectar();
+	        String query = "UPDATE intell.asignaciones SET id_empleado = ? WHERE id_asignacion = ?";
+	        ps = cn.prepareStatement(query);
+	        ps.setInt(1, idEmpleado);
+	        ps.setInt(2, idAsignacion);
+	        
+	        int filasAfectadas = ps.executeUpdate();
+
+	        return filasAfectadas > 0;
+	    } catch (SQLException e) {
+	        System.out.println("Error al asignar asignación a empleado: " + e.getMessage());
+	    } finally {
+	        try {
+	            if (ps != null) {
+	                ps.close();
+	            }
+	            if (cn != null) {
+	                desconectar(cn);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return false;
+	}
+
+
+
 
 }

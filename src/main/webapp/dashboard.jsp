@@ -26,6 +26,7 @@ body {
 	font-family: Arial, sans-serif;
 	margin: 0;
 	padding: 0;
+	overflow: hidden;
 }
 
 body::before {
@@ -48,6 +49,7 @@ body::before {
 	padding-top: 20px;
 	text-align: center;
 	color: white;
+	overflow-y: auto;
 }
 
 .sidebar a {
@@ -79,6 +81,22 @@ body::before {
 .card h3 {
 	color: #fff;
 }
+
+select {
+	width: 100%;
+	padding: 8px;
+	margin-top: 8px;
+	margin-bottom: 16px;
+	box-sizing: border-box;
+}
+
+.card ul {
+	list-style-type: none;
+	padding: 0;
+	margin: 0;
+	overflow-y: auto;
+	max-height: 100px; 
+}
 </style>
 </head>
 
@@ -90,16 +108,21 @@ body::before {
 		if (esAdmin) {
 		%>
 		<a href="altaEmpleado.jsp">Dar de alta un nuevo empleado</a> <a
-			href="nuevaAsignacion.jsp">Crear nuevas asignaciones</a>
+			href="asignarAsignacion.jsp">Realizar una asignación</a>
+			<a
+			href="altaAsignacion.jsp">Dar de alta una nueva asignación</a>
+			<a
+			href="altaRequerimiento.jsp">Dar de alta un nuevo requerimiento</a>
+			<a
+			href="altaCasodeuso.jsp">Dar de alta un nuevo caso de uso</a>
 		<%
 		}
 		%>
-		<a href="visualizarAsignaciones.jsp">Visualizar asignaciones
-			asignadas</a>
+		<a href="visualizarAsignaciones.jsp">Visualizar mis asignaciones
+			</a>
 	</div>
 
 	<div class="content">
-		<!-- Aquí va el contenido específico de cada página -->
 		<h2>
 			Bienvenido,
 			<%=empleado.getNombreCompleto()%></h2>
@@ -111,19 +134,24 @@ body::before {
 			<p>
 				Telefono:
 				<%=empleado.getTelefono()%></p>
-			<!-- Agrega más información del empleado según tus necesidades -->
 		</div>
 		<div class="card">
 			<h3>Asignaciones:</h3>
 			<ul>
 				<%
-				for (Asignacion a : asignaciones) {
+				for (Asignacion asign : asignaciones) {
 				%>
-				<li>Nombre: <%=a.getNombreAsignacion() %></li>
+				<li>Nombre: <%=asign.getNombreAsignacion() %></li>
 				<%
 				}
 				%>
 			</ul>
+
+           <select name="asignaciones" id="asignacionesDropdown">
+                <% for (Asignacion asign : asignaciones) { %>
+                    <option value="<%= asign.getId_asignacion() %>"><%= asign.getNombreAsignacion() %></option>
+                <% } %>
+            </select>
 		</div>
 	</div>
 </body>
