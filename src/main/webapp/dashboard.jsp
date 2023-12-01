@@ -141,7 +141,7 @@ select {
 				<%
 				for (Asignacion asign : asignaciones) {
 				%>
-				<li>Nombre: <%=asign.getNombreAsignacion() %></li>
+				<li>-<%=asign.getNombreAsignacion() %></li>
 				<%
 				}
 				%>

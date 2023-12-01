@@ -233,37 +233,6 @@ public class BaseDeDatos {
 		return false;
 	}
 
-	public static boolean realizarAsignacionExistente(String nombreUsuario, int id_asignacion) {
-		Connection cn = null;
-		Statement stm = null;
-		int idEmpleado = obtenerEmpleadoPorNombre(nombreUsuario).getIdEmpleado();
-
-		if (idEmpleado != -1) {
-			try {
-				cn = conectar();
-				stm = cn.createStatement();
-				String query = "UPDATE intell.asignaciones SET id_empleado = '" + idEmpleado + "' WHERE id_asignacion = '" + id_asignacion + "'";
-				int filasAfectadas = stm.executeUpdate(query);
-				return filasAfectadas > 0;
-			} catch (SQLException e) {
-				System.out.println("Error al realizar asignación existente: " + e.getMessage());
-			} finally {
-				try {
-					if (stm != null) {
-						stm.close();
-					}
-					desconectar(cn);
-				} catch (SQLException e) {
-					e.printStackTrace();
-				}
-			}
-		} else {
-			System.out.println("El empleado no existe en la tabla empleados.");
-		}
-
-		return false;
-	}
-
 
 	public static boolean registrarEmpleado(String nombreCompleto, String nombreUsuario, String contrasena, String sexo, String correo, String telefono, LocalDate fecha_nacimiento, int es_admin) {
 		Connection cn = null;
@@ -382,7 +351,6 @@ public class BaseDeDatos {
 
 			return filasAfectadasAsignaciones > 0 && filasAfectadasHorasTrabajadas > 0;
 		} catch (SQLException e) {
-			// Manejar errores y revertir la transacción si es necesario
 			try {
 				if (cn != null) {
 					cn.rollback();
@@ -509,7 +477,6 @@ public class BaseDeDatos {
 		return false;
 	}
 
-	// Método para obtener el estado actual de la asignación
 	public static String obtenerEstadoAsignacion(int id_asignacion) {
 		Connection cn = null;
 		PreparedStatement ps = null;
@@ -718,7 +685,78 @@ public class BaseDeDatos {
 	    return false;
 	}
 
+	public static List<Requerimiento> obtenerTodosLosRequerimientos() {
+	    List<Requerimiento> requerimientos = new ArrayList<>();
+	    Connection cn = null;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
 
+	    try {
+	        cn = conectar();
+	        String query = "SELECT * FROM intell.requerimientos";
+	        ps = cn.prepareStatement(query);
+	        rs = ps.executeQuery();
+
+	        while (rs.next()) {
+	            Requerimiento req = new Requerimiento();
+	            req.setId_req(rs.getInt("id_req"));
+	            req.setFolio(rs.getString("folio"));
+	            req.setDetalle(rs.getString("detalle"));
+	            requerimientos.add(req);
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Error al obtener todos los requerimientos: " + e.getMessage());
+	    } finally {
+	        try {
+	            desconectar(cn);
+	            ps.close();
+	            rs.close();
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return requerimientos;
+	}
+
+	public static List<CasoDeUso> obtenerTodosLosCasosDeUso() {
+	    List<CasoDeUso> casosDeUso = new ArrayList<>();
+	    Connection cn = null;
+	    PreparedStatement ps = null;
+	    ResultSet rs = null;
+
+	    try {
+	        cn = conectar();
+	        String query = "SELECT * FROM intell.casosdeuso";
+	        ps = cn.prepareStatement(query);
+	        rs = ps.executeQuery();
+
+	        while (rs.next()) {
+	            CasoDeUso caso = new CasoDeUso();
+	            caso.setId_caso(rs.getInt("id_caso"));
+	            caso.setDetalle(rs.getString("detalle"));
+	            casosDeUso.add(caso);
+	        }
+	    } catch (SQLException e) {
+	        System.out.println("Error al obtener todos los casos de uso: " + e.getMessage());
+	    } finally {
+	        try {
+	            if (rs != null) {
+	                rs.close();
+	            }
+	            if (ps != null) {
+	                ps.close();
+	            }
+	            if (cn != null) {
+	                desconectar(cn);
+	            }
+	        } catch (SQLException e) {
+	            e.printStackTrace();
+	        }
+	    }
+
+	    return casosDeUso;
+	}
 
 
 }
