@@ -9,6 +9,7 @@ import java.sql.Statement;
 import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
+import java.time.Period;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.List;
@@ -264,22 +265,23 @@ public class BaseDeDatos {
 	}
 
 
-	public static boolean registrarEmpleado(String nombreCompleto, String nombreUsuario, String contrasena, int edad, String sexo, String correo, String telefono, LocalDate fecha_nacimiento) {
+	public static boolean registrarEmpleado(String nombreCompleto, String nombreUsuario, String contrasena, String sexo, String correo, String telefono, LocalDate fecha_nacimiento, int es_admin) {
 		Connection cn = null;
 		PreparedStatement ps = null;
 
 		try {
 			cn = conectar();
-			String query = "INSERT INTO intell.empleados (nombre_completo, nombre_usuario, contrasena, edad, sexo, correo, telefono, fecha_nacimiento)  VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+			String query = "INSERT INTO intell.empleados (nombre_completo, nombre_usuario, contrasena, edad, sexo, correo, telefono, fecha_nacimiento, es_admin)  VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 			ps = cn.prepareStatement(query);
 			ps.setString(1, nombreCompleto);
 			ps.setString(2, nombreUsuario);
 			ps.setString(3, contrasena);
-			ps.setInt(4, edad);
+			ps.setInt(4, Period.between(fecha_nacimiento, LocalDate.now()).getYears());
 			ps.setString(5, sexo);
 			ps.setString(6, correo);
 			ps.setString(7, telefono);
 			ps.setDate(8, java.sql.Date.valueOf(fecha_nacimiento));
+			ps.setInt(9, es_admin);
 			int filasAfectadas = ps.executeUpdate();
 			return filasAfectadas > 0;
 		} catch (SQLException e) {

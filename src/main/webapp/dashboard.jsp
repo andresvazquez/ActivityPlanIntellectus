@@ -84,11 +84,8 @@ body::before {
 
 <body>
 	<div class="sidebar">
-		<h1>
-			Intellectus
-			</h2>
-			<h2>Activity Plan
-		</h1>
+		<h1>Intellectus</h1>
+		<h2>Activity Plan</h2>
 		<%
 		if (esAdmin) {
 		%>
