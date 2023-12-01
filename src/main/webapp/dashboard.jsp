@@ -13,6 +13,11 @@ List<Asignacion> asignaciones = (List<Asignacion>) session.getAttribute("asignac
 
 // Verifica si el empleado es administrador
 boolean esAdmin = (empleado != null && empleado.getEs_admin() == 1);
+
+//Verifica si el empleado está autenticado, de lo contrario, redirige a index.jsp
+if (empleado == null) {
+ response.sendRedirect("index.jsp");
+}
 %>
 
 <!DOCTYPE html>
@@ -95,7 +100,7 @@ select {
 	padding: 0;
 	margin: 0;
 	overflow-y: auto;
-	max-height: 100px; 
+	max-height: 100px;
 }
 </style>
 </head>
@@ -108,18 +113,14 @@ select {
 		if (esAdmin) {
 		%>
 		<a href="altaEmpleado.jsp">Dar de alta un nuevo empleado</a> <a
-			href="asignarAsignacion.jsp">Realizar una asignación</a>
-			<a
-			href="altaAsignacion.jsp">Dar de alta una nueva asignación</a>
-			<a
-			href="altaRequerimiento.jsp">Dar de alta un nuevo requerimiento</a>
-			<a
-			href="altaCasodeuso.jsp">Dar de alta un nuevo caso de uso</a>
+			href="asignarAsignacion.jsp">Realizar una asignación</a> <a
+			href="altaAsignacion.jsp">Dar de alta una nueva asignación</a> <a
+			href="altaRequerimiento.jsp">Dar de alta un nuevo requerimiento</a> <a
+			href="altaCasodeUso.jsp">Dar de alta un nuevo caso de uso</a>
 		<%
 		}
 		%>
-		<a href="visualizarAsignaciones.jsp">Visualizar mis asignaciones
-			</a>
+		<a href="visualizarAsignaciones.jsp">Visualizar mis asignaciones </a>
 	</div>
 
 	<div class="content">
@@ -147,11 +148,11 @@ select {
 				%>
 			</ul>
 
-           <select name="asignaciones" id="asignacionesDropdown">
-                <% for (Asignacion asign : asignaciones) { %>
-                    <option value="<%= asign.getId_asignacion() %>"><%= asign.getNombreAsignacion() %></option>
-                <% } %>
-            </select>
+			<select name="asignaciones" id="asignacionesDropdown">
+				<% for (Asignacion asign : asignaciones) { %>
+				<option value="<%= asign.getId_asignacion() %>"><%= asign.getNombreAsignacion() %></option>
+				<% } %>
+			</select>
 		</div>
 	</div>
 </body>
