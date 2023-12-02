@@ -890,5 +890,41 @@ public class BaseDeDatos {
 		return requerimiento;
 	}
 
+	public static int obtenerHorasRegistradasPorAsignacion(int idAsignacion) {
+        Connection connection = null;
+        PreparedStatement preparedStatement = null;
+        ResultSet resultSet = null;
+        int totalHoras = 0;
+
+        try {
+            connection = conectar();
+
+            String query = "SELECT SUM(horas) as total_horas FROM intell.horas_trabajadas WHERE id_asignacion = ?";
+            preparedStatement = connection.prepareStatement(query);
+            preparedStatement.setInt(1, idAsignacion);
+
+            resultSet = preparedStatement.executeQuery();
+
+            if (resultSet.next()) {
+                totalHoras = resultSet.getInt("total_horas");
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        } finally {
+            try {
+                if (resultSet != null) {
+                    resultSet.close();
+                }
+                if (preparedStatement != null) {
+                    preparedStatement.close();
+                }
+                desconectar(connection);
+            } catch (SQLException e) {
+                e.printStackTrace(); 
+            }
+        }
+
+        return totalHoras;
+    }
 
 }
