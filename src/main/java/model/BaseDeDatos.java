@@ -434,52 +434,52 @@ public class BaseDeDatos {
 
 	@SuppressWarnings("resource")
 	public static boolean realizarCambioEstado(String autor, int id_asignacion, String nuevoEstado, String nuevaPrioridad, String comentario) {
-	    Connection cn = null;
-	    PreparedStatement ps = null;
+		Connection cn = null;
+		PreparedStatement ps = null;
 
-	    try {
-	        cn = conectar();
-	        // Obtener el estado y la prioridad actual de la asignación
-	        String estadoAnterior = obtenerEstadoAsignacion(id_asignacion);
-	        if(estadoAnterior==null) {
-	        	estadoAnterior="backlog";
-	        }
+		try {
+			cn = conectar();
+			// Obtener el estado y la prioridad actual de la asignación
+			String estadoAnterior = obtenerEstadoAsignacion(id_asignacion);
+			if(estadoAnterior==null) {
+				estadoAnterior="backlog";
+			}
 
-	        // Actualizar el estado y la prioridad en la tabla de asignaciones
-	        String queryUpdate = "UPDATE intell.asignaciones SET estado = ?, prioridad = ? WHERE id_asignacion = ?";
-	        ps = cn.prepareStatement(queryUpdate);
-	        ps.setString(1, nuevoEstado);
-	        ps.setString(2, nuevaPrioridad);
-	        ps.setInt(3, id_asignacion);
-	        int filasAfectadas = ps.executeUpdate();
+			// Actualizar el estado y la prioridad en la tabla de asignaciones
+			String queryUpdate = "UPDATE intell.asignaciones SET estado = ?, prioridad = ? WHERE id_asignacion = ?";
+			ps = cn.prepareStatement(queryUpdate);
+			ps.setString(1, nuevoEstado);
+			ps.setString(2, nuevaPrioridad);
+			ps.setInt(3, id_asignacion);
+			int filasAfectadas = ps.executeUpdate();
 
-	        // Registrar la retroalimentación
-	        if (filasAfectadas > 0) {
-	            String queryInsert = "INSERT INTO intell.retroalimentaciones (id_asignacion, autor, comentario, estado_anterior, estado_nuevo, fecha) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
-	            ps = cn.prepareStatement(queryInsert);
-	            ps.setInt(1, id_asignacion);
-	            ps.setString(2, autor);
-	            ps.setString(3, comentario);
-	            ps.setString(4, estadoAnterior);
-	            ps.setString(5, nuevoEstado);
-	            ps.executeUpdate();
-	        }
+			// Registrar la retroalimentación
+			if (filasAfectadas > 0) {
+				String queryInsert = "INSERT INTO intell.retroalimentaciones (id_asignacion, autor, comentario, estado_anterior, estado_nuevo, fecha) VALUES (?, ?, ?, ?, ?, CURRENT_TIMESTAMP)";
+				ps = cn.prepareStatement(queryInsert);
+				ps.setInt(1, id_asignacion);
+				ps.setString(2, autor);
+				ps.setString(3, comentario);
+				ps.setString(4, estadoAnterior);
+				ps.setString(5, nuevoEstado);
+				ps.executeUpdate();
+			}
 
-	        return filasAfectadas > 0;
-	    } catch (SQLException e) {
-	        System.out.println("Error al realizar cambio de estado: " + e.getMessage());
-	    } finally {
-	        try {
-	            desconectar(cn);
-	            if (ps != null) {
-	                ps.close();
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+			return filasAfectadas > 0;
+		} catch (SQLException e) {
+			System.out.println("Error al realizar cambio de estado: " + e.getMessage());
+		} finally {
+			try {
+				desconectar(cn);
+				if (ps != null) {
+					ps.close();
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return false;
+		return false;
 	}
 
 
@@ -562,257 +562,333 @@ public class BaseDeDatos {
 
 		return retroalimentaciones;
 	}
-	
+
 	public static List<Empleado> obtenerTodosLosEmpleados() {
-	    Connection cn = null;
-	    Statement stm = null;
-	    ResultSet rs = null;
-	    List<Empleado> empleados = new ArrayList<>();
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
+		List<Empleado> empleados = new ArrayList<>();
 
-	    try {
-	        cn = conectar();
-	        stm = cn.createStatement();
-	        String query = "SELECT * FROM intell.empleados";
-	        rs = stm.executeQuery(query);
+		try {
+			cn = conectar();
+			stm = cn.createStatement();
+			String query = "SELECT * FROM intell.empleados";
+			rs = stm.executeQuery(query);
 
-	        while (rs.next()) {
-	            int idEmpleado = rs.getInt("id_empleado");
-	            String nombreCompleto = rs.getString("nombre_completo");
-	            String nombreUsuario = rs.getString("nombre_usuario");
-	            String contrasena = rs.getString("contrasena");
-	            int edad = rs.getInt("edad");
-	            String sexo = rs.getString("sexo");
-	            String correo = rs.getString("correo");
-	            String telefono = rs.getString("telefono");
-	            int esAdmin = rs.getInt("es_admin");
-	            LocalDate fechaNacimiento = rs.getObject("fecha_nacimiento", LocalDate.class);
+			while (rs.next()) {
+				int idEmpleado = rs.getInt("id_empleado");
+				String nombreCompleto = rs.getString("nombre_completo");
+				String nombreUsuario = rs.getString("nombre_usuario");
+				String contrasena = rs.getString("contrasena");
+				int edad = rs.getInt("edad");
+				String sexo = rs.getString("sexo");
+				String correo = rs.getString("correo");
+				String telefono = rs.getString("telefono");
+				int esAdmin = rs.getInt("es_admin");
+				LocalDate fechaNacimiento = rs.getObject("fecha_nacimiento", LocalDate.class);
 
-	            Empleado empleado = new Empleado(nombreCompleto, nombreUsuario, contrasena, sexo, edad, idEmpleado, fechaNacimiento, correo, telefono, esAdmin);
-	            empleados.add(empleado);
-	        }
-	    } catch (SQLException e) {
-	        System.out.println("Error al obtener todos los empleados: " + e.getMessage());
-	    } finally {
-	        try {
-	            if (rs != null) {
-	                rs.close();
-	            }
-	            if (stm != null) {
-	                stm.close();
-	            }
-	            if (cn != null) {
-	                desconectar(cn);
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+				Empleado empleado = new Empleado(nombreCompleto, nombreUsuario, contrasena, sexo, edad, idEmpleado, fechaNacimiento, correo, telefono, esAdmin);
+				empleados.add(empleado);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener todos los empleados: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (cn != null) {
+					desconectar(cn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return empleados;
+		return empleados;
 	}
-	
+
 	public static List<Asignacion> obtenerTodasLasAsignaciones() {
-	    Connection cn = null;
-	    Statement stm = null;
-	    ResultSet rs = null;
-	    List<Asignacion> asignaciones = new ArrayList<>();
+		Connection cn = null;
+		Statement stm = null;
+		ResultSet rs = null;
+		List<Asignacion> asignaciones = new ArrayList<>();
 
-	    try {
-	        cn = conectar();
-	        stm = cn.createStatement();
-	        String query = "SELECT * FROM intell.asignaciones";
-	        rs = stm.executeQuery(query);
+		try {
+			cn = conectar();
+			stm = cn.createStatement();
+			String query = "SELECT * FROM intell.asignaciones";
+			rs = stm.executeQuery(query);
 
-	        while (rs.next()) {
-	            int idEmpleado = rs.getInt("id_empleado");
-	            LocalDate fchInicio = rs.getObject("fch_inicio", LocalDate.class);
-	            LocalDate fchFin = rs.getObject("fch_fin", LocalDate.class);
-	            String nombreAsignacion = rs.getString("nombre_asignacion");
-	            String detalle = rs.getString("detalle");
-	            int idReq = rs.getInt("id_req");
-	            int idCaso = rs.getInt("id_caso");
-	            int horas = rs.getInt("horas");
-	            String estado = rs.getString("estado");
-	            String prioridad = rs.getString("prioridad");
-	            int idAsignacion = rs.getInt("id_asignacion");
+			while (rs.next()) {
+				int idEmpleado = rs.getInt("id_empleado");
+				LocalDate fchInicio = rs.getObject("fch_inicio", LocalDate.class);
+				LocalDate fchFin = rs.getObject("fch_fin", LocalDate.class);
+				String nombreAsignacion = rs.getString("nombre_asignacion");
+				String detalle = rs.getString("detalle");
+				int idReq = rs.getInt("id_req");
+				int idCaso = rs.getInt("id_caso");
+				int horas = rs.getInt("horas");
+				String estado = rs.getString("estado");
+				String prioridad = rs.getString("prioridad");
+				int idAsignacion = rs.getInt("id_asignacion");
 
-	            Asignacion asignacion = new Asignacion(idAsignacion, idEmpleado, fchInicio, fchFin, nombreAsignacion, detalle, idReq, idCaso, horas, estado, prioridad);
-	            asignaciones.add(asignacion);
-	        }
-	    } catch (SQLException e) {
-	        System.out.println("Error al obtener todas las asignaciones: " + e.getMessage());
-	    } finally {
-	        try {
-	            if (rs != null) {
-	                rs.close();
-	            }
-	            if (stm != null) {
-	                stm.close();
-	            }
-	            if (cn != null) {
-	                desconectar(cn);
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+				Asignacion asignacion = new Asignacion(idAsignacion, idEmpleado, fchInicio, fchFin, nombreAsignacion, detalle, idReq, idCaso, horas, estado, prioridad);
+				asignaciones.add(asignacion);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener todas las asignaciones: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (stm != null) {
+					stm.close();
+				}
+				if (cn != null) {
+					desconectar(cn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return asignaciones;
+		return asignaciones;
 	}
-	
+
 	public static boolean asignarAsignacionAEmpleado(int idEmpleado, int idAsignacion) {
-	    Connection cn = null;
-	    PreparedStatement ps = null;
+		Connection cn = null;
+		PreparedStatement ps = null;
 
-	    try {
-	        cn = conectar();
-	        String query = "UPDATE intell.asignaciones SET id_empleado = ? WHERE id_asignacion = ?";
-	        ps = cn.prepareStatement(query);
-	        ps.setInt(1, idEmpleado);
-	        ps.setInt(2, idAsignacion);
-	        
-	        int filasAfectadas = ps.executeUpdate();
+		try {
+			cn = conectar();
+			String query = "UPDATE intell.asignaciones SET id_empleado = ? WHERE id_asignacion = ?";
+			ps = cn.prepareStatement(query);
+			ps.setInt(1, idEmpleado);
+			ps.setInt(2, idAsignacion);
 
-	        return filasAfectadas > 0;
-	    } catch (SQLException e) {
-	        System.out.println("Error al asignar asignación a empleado: " + e.getMessage());
-	    } finally {
-	        try {
-	            if (ps != null) {
-	                ps.close();
-	            }
-	            if (cn != null) {
-	                desconectar(cn);
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+			int filasAfectadas = ps.executeUpdate();
 
-	    return false;
+			return filasAfectadas > 0;
+		} catch (SQLException e) {
+			System.out.println("Error al asignar asignación a empleado: " + e.getMessage());
+		} finally {
+			try {
+				if (ps != null) {
+					ps.close();
+				}
+				if (cn != null) {
+					desconectar(cn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return false;
 	}
 
 	public static List<Requerimiento> obtenerTodosLosRequerimientos() {
-	    List<Requerimiento> requerimientos = new ArrayList<>();
-	    Connection cn = null;
-	    PreparedStatement ps = null;
-	    ResultSet rs = null;
+		List<Requerimiento> requerimientos = new ArrayList<>();
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-	    try {
-	        cn = conectar();
-	        String query = "SELECT * FROM intell.requerimientos";
-	        ps = cn.prepareStatement(query);
-	        rs = ps.executeQuery();
+		try {
+			cn = conectar();
+			String query = "SELECT * FROM intell.requerimientos";
+			ps = cn.prepareStatement(query);
+			rs = ps.executeQuery();
 
-	        while (rs.next()) {
-	            Requerimiento req = new Requerimiento();
-	            req.setId_req(rs.getInt("id_req"));
-	            req.setFolio(rs.getString("folio"));
-	            req.setDetalle(rs.getString("detalle"));
-	            requerimientos.add(req);
-	        }
-	    } catch (SQLException e) {
-	        System.out.println("Error al obtener todos los requerimientos: " + e.getMessage());
-	    } finally {
-	        try {
-	            desconectar(cn);
-	            ps.close();
-	            rs.close();
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+			while (rs.next()) {
+				Requerimiento req = new Requerimiento();
+				req.setId_req(rs.getInt("id_req"));
+				req.setFolio(rs.getString("folio"));
+				req.setDetalle(rs.getString("detalle"));
+				requerimientos.add(req);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener todos los requerimientos: " + e.getMessage());
+		} finally {
+			try {
+				desconectar(cn);
+				ps.close();
+				rs.close();
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return requerimientos;
+		return requerimientos;
 	}
 
 	public static List<CasoDeUso> obtenerTodosLosCasosDeUso() {
-	    List<CasoDeUso> casosDeUso = new ArrayList<>();
-	    Connection cn = null;
-	    PreparedStatement ps = null;
-	    ResultSet rs = null;
+		List<CasoDeUso> casosDeUso = new ArrayList<>();
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
 
-	    try {
-	        cn = conectar();
-	        String query = "SELECT * FROM intell.casosdeuso";
-	        ps = cn.prepareStatement(query);
-	        rs = ps.executeQuery();
+		try {
+			cn = conectar();
+			String query = "SELECT * FROM intell.casosdeuso";
+			ps = cn.prepareStatement(query);
+			rs = ps.executeQuery();
 
-	        while (rs.next()) {
-	            CasoDeUso caso = new CasoDeUso();
-	            caso.setId_caso(rs.getInt("id_caso"));
-	            caso.setDetalle(rs.getString("detalle"));
-	            casosDeUso.add(caso);
-	        }
-	    } catch (SQLException e) {
-	        System.out.println("Error al obtener todos los casos de uso: " + e.getMessage());
-	    } finally {
-	        try {
-	            if (rs != null) {
-	                rs.close();
-	            }
-	            if (ps != null) {
-	                ps.close();
-	            }
-	            if (cn != null) {
-	                desconectar(cn);
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+			while (rs.next()) {
+				CasoDeUso caso = new CasoDeUso();
+				caso.setId_caso(rs.getInt("id_caso"));
+				caso.setDetalle(rs.getString("detalle"));
+				casosDeUso.add(caso);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener todos los casos de uso: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (cn != null) {
+					desconectar(cn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return casosDeUso;
+		return casosDeUso;
 	}
-	
+
 	public static Asignacion obtenerAsignacionPorId(int idAsignacion) {
-	    Connection cn = null;
-	    PreparedStatement ps = null;
-	    ResultSet rs = null;
-	    Asignacion asignacion = null;
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Asignacion asignacion = null;
 
-	    try {
-	        cn = conectar();
-	        String query = "SELECT * FROM intell.asignaciones WHERE id_asignacion = ?";
-	        ps = cn.prepareStatement(query);
-	        ps.setInt(1, idAsignacion);
-	        rs = ps.executeQuery();
+		try {
+			cn = conectar();
+			String query = "SELECT * FROM intell.asignaciones WHERE id_asignacion = ?";
+			ps = cn.prepareStatement(query);
+			ps.setInt(1, idAsignacion);
+			rs = ps.executeQuery();
 
-	        if (rs.next()) {
-	            int idEmpleado = rs.getInt("id_empleado");
-	            LocalDate fchInicio = rs.getObject("fch_inicio", LocalDate.class);
-	            LocalDate fchFin = rs.getObject("fch_fin", LocalDate.class);
-	            String nombreAsignacion = rs.getString("nombre_asignacion");
-	            String detalle = rs.getString("detalle");
-	            int idReq = rs.getInt("id_req");
-	            int idCaso = rs.getInt("id_caso");
-	            int horas = rs.getInt("horas");
-	            String estado = rs.getString("estado");
-	            String prioridad = rs.getString("prioridad");
+			if (rs.next()) {
+				int idEmpleado = rs.getInt("id_empleado");
+				LocalDate fchInicio = rs.getObject("fch_inicio", LocalDate.class);
+				LocalDate fchFin = rs.getObject("fch_fin", LocalDate.class);
+				String nombreAsignacion = rs.getString("nombre_asignacion");
+				String detalle = rs.getString("detalle");
+				int idReq = rs.getInt("id_req");
+				int idCaso = rs.getInt("id_caso");
+				int horas = rs.getInt("horas");
+				String estado = rs.getString("estado");
+				String prioridad = rs.getString("prioridad");
 
-	            asignacion = new Asignacion(idAsignacion, idEmpleado, fchInicio, fchFin, nombreAsignacion, detalle, idReq, idCaso, horas, estado, prioridad);
-	        }
-	    } catch (SQLException e) {
-	        System.out.println("Error al obtener asignación por ID: " + e.getMessage());
-	    } finally {
-	        try {
-	            if (rs != null) {
-	                rs.close();
-	            }
-	            if (ps != null) {
-	                ps.close();
-	            }
-	            if (cn != null) {
-	                desconectar(cn);
-	            }
-	        } catch (SQLException e) {
-	            e.printStackTrace();
-	        }
-	    }
+				asignacion = new Asignacion(idAsignacion, idEmpleado, fchInicio, fchFin, nombreAsignacion, detalle, idReq, idCaso, horas, estado, prioridad);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener asignación por ID: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (cn != null) {
+					desconectar(cn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
 
-	    return asignacion;
+		return asignacion;
 	}
 
+	public static CasoDeUso obtenerCasoDeUsoPorID(int idCasoDeUso) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		CasoDeUso casoDeUso = null;
+
+		try {
+			cn = conectar();
+			String query = "SELECT * FROM intell.casosdeuso WHERE id_caso = ?";
+			ps = cn.prepareStatement(query);
+			ps.setInt(1, idCasoDeUso);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				String detalle = rs.getString("detalle");
+				casoDeUso = new CasoDeUso(idCasoDeUso, detalle);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener el caso de uso por ID: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (cn != null) {
+					desconectar(cn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return casoDeUso;
+	}
+
+	public static Requerimiento obtenerRequerimientoPorID(int idRequerimiento) {
+		Connection cn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Requerimiento requerimiento = null;
+
+		try {
+			cn = conectar();
+			String query = "SELECT * FROM intell.requerimientos WHERE id_req = ?";
+			ps = cn.prepareStatement(query);
+			ps.setInt(1, idRequerimiento);
+			rs = ps.executeQuery();
+
+			if (rs.next()) {
+				String folio = rs.getString("folio");
+				String detalle = rs.getString("detalle");
+				requerimiento = new Requerimiento(idRequerimiento,folio, detalle);
+			}
+		} catch (SQLException e) {
+			System.out.println("Error al obtener el requerimiento por ID: " + e.getMessage());
+		} finally {
+			try {
+				if (rs != null) {
+					rs.close();
+				}
+				if (ps != null) {
+					ps.close();
+				}
+				if (cn != null) {
+					desconectar(cn);
+				}
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+		}
+
+		return requerimiento;
+	}
 
 
 }
