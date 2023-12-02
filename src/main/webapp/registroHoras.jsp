@@ -15,7 +15,7 @@ SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefau
 
 // Fecha actual
 LocalDate fechaActual = LocalDate.now();
-
+//
 // Convertir fechaActual a Date
 Date fechaActualDate = java.sql.Date.valueOf(fechaActual);
 
