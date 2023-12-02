@@ -14,10 +14,3 @@ before_script:
 script:
   - ./gradlew test
 
-# Configuración de notificaciones o despliegue (opcional)
-notifications:
-  email:
-    recipients:
-      - tu_correo@example.com
-    on_success: always
-    on_failure: always
