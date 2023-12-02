@@ -2,15 +2,6 @@ language: java
 jdk:
   - openjdk11
 
-# Configuración específica de Java
-before_install:
-  - chmod +x gradlew
-
-# Comandos a ejecutar antes de la prueba
-before_script:
-  - ./gradlew assemble
-
-# Comandos de prueba
 script:
-  - ./gradlew test
-
+  - javac -cp .:./lib/junit-4.12.jar:/usr/share/java/hamcrest-core-1.3.jar repository/PruebaConexion.java
+  - java -cp .:./lib/junit-4.12.jar:/usr/share/java/hamcrest-core-1.3.jar org.junit.runner.JUnitCore repository.PruebaConexionTest
