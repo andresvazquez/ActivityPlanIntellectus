@@ -2,5 +2,22 @@ language: java
 jdk:
   - openjdk11
 
+# Configuración específica de Java
+before_install:
+  - chmod +x gradlew
+
+# Comandos a ejecutar antes de la prueba
+before_script:
+  - ./gradlew assemble
+
+# Comandos de prueba
 script:
-  - ./gradlew test  # Reemplaza con el comando para ejecutar tus pruebas JUnit
+  - ./gradlew test
+
+# Configuración de notificaciones o despliegue (opcional)
+notifications:
+  email:
+    recipients:
+      - tu_correo@example.com
+    on_success: always
+    on_failure: always
