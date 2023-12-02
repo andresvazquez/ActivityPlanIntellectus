@@ -3,4 +3,5 @@ jdk:
   - openjdk11
 
 script:
-  - ./gradlew test  # Reemplaza con el comando para ejecutar tus pruebas JUnit
+  - javac -cp .:./lib/junit-4.12.jar:/usr/share/java/hamcrest-core-1.3.jar repository/PruebaConexion.java
+  - java -cp .:./lib/junit-4.12.jar:/usr/share/java/hamcrest-core-1.3.jar org.junit.runner.JUnitCore repository.PruebaConexionTest
