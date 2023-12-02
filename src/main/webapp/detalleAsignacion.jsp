@@ -17,7 +17,13 @@ if (empleado == null) {
 }
 
 // Obtén el id de la asignación desde los parámetros de la URL
-int id_asignacion = Integer.parseInt(request.getParameter("id"));
+int id_asignacion=0;
+try{
+id_asignacion = Integer.parseInt(request.getParameter("id"));
+}catch(Exception e){
+	id_asignacion= (int)session.getAttribute("id_asignacion");
+}
+session.setAttribute("id_asignacion", id_asignacion);
 
 // Obtén la asignación correspondiente al id
 Asignacion asignacion = model.BaseDeDatos.obtenerAsignacionPorId(id_asignacion);
@@ -188,6 +194,12 @@ a {
 	border-radius: 5px;
 	cursor: pointer;
 }
+
+a {
+	color: #007BFF; /* Color azul */
+	text-decoration: underline; /* Subrayado */
+}
+
 </style>
 </head>
 
@@ -203,15 +215,27 @@ a {
 			Bienvenido,
 			<%=empleado.getNombreCompleto()%></h2>
 		<div class="card">
-			<h3>Detalles de Asignación</h3>
+			<h3>Detalles de Actividad</h3>
 			<div class="table-container">
 				<table>
 					<tr>
 						<th colspan="2" class="long-field-cell"><%=asignacion.getNombreAsignacion()%></th>
 					</tr>
 					<tr>
-						<td>Detalle</td>
+						<td>Detalle de la actividad</td>
 						<td class="long-field-cell"><%=asignacion.getDetalle()%></td>
+					</tr>
+					<tr>
+						<td><a href="<%= "detalleRequerimiento.jsp?id=" + asignacion.getId_req() %>">Requerimiento</a></td>
+						<td class="long-field-cell"><%=BaseDeDatos.obtenerRequerimientoPorID(asignacion.getId_req()).getFolio()%></td>
+					</tr>
+					<tr>
+						<td>Detalle de requerimiento</td>
+						<td class="long-field-cell"><%=BaseDeDatos.obtenerRequerimientoPorID(asignacion.getId_req()).getDetalle()%></td>
+					</tr>
+					<tr>
+						<td><a href="<%= "detalleCasoDeUso.jsp?id=" + asignacion.getId_caso() %>">Caso de uso</a></td>
+						<td class="long-field-cell"><%=BaseDeDatos.obtenerCasoDeUsoPorID(asignacion.getId_caso()).getDetalle()%></td>
 					</tr>
 					<tr>
 						<td>Fecha Inicio</td>
