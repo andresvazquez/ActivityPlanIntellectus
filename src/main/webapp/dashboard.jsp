@@ -42,7 +42,6 @@ body::before {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: url('images/background.jpg') center/cover no-repeat;
 	opacity: .9;
 	z-index: -1;
 }

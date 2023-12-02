@@ -25,6 +25,8 @@ id_asignacion = Integer.parseInt(request.getParameter("id"));
 }
 session.setAttribute("id_asignacion", id_asignacion);
 
+System.out.println(id_asignacion);
+
 // Obtén la asignación correspondiente al id
 Asignacion asignacion = model.BaseDeDatos.obtenerAsignacionPorId(id_asignacion);
 
@@ -64,7 +66,6 @@ body::before {
 	left: 0;
 	width: 100%;
 	height: 100%;
-	background: url('images/background.jpg') center/cover no-repeat;
 	opacity: .9;
 	z-index: -1;
 }
@@ -247,7 +248,7 @@ a {
 					</tr>
 					<tr>
 						<td>Horas</td>
-						<td><%=asignacion.getHoras()%></td>
+						<td><a href="<%= "registroHoras.jsp?id=" + id_asignacion %>"><%=BaseDeDatos.obtenerHorasRegistradasPorAsignacion(id_asignacion)%></a></td>
 					</tr>
 					<tr>
 						<td>Estado</td>
