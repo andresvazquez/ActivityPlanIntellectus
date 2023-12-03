@@ -1,4 +1,4 @@
-![Build status](https://app.travis-ci.com/andresvazquez/ActivityPlanIntellectus.svg?branch=develop)
+![Build status](https://app.travis-ci.com/andresvazquez/ActivityPlanIntellectus.svg?branch=master)
 # Activity Plan Intellectus
 
 # Proyecto de Gestión de Actividades
