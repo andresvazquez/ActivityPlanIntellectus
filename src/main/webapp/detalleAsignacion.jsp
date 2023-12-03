@@ -121,18 +121,18 @@ select {
 	box-sizing: border-box;
 }
 
+td.long-field-cell {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	overflow-x: auto;
+	max-width: 300px;
+}
+
 .table-container table {
 	width: 100%;
 	table-layout: fixed;
 	border-collapse: collapse;
 	margin-top: 10px;
-}
-
-.long-field-cell {
-	white-space: pre-wrap;
-	max-height: 100px;
-	overflow-y: auto;
-	word-wrap: break-word;
 }
 
 table {
@@ -212,6 +212,20 @@ a {
 	border-radius: 5px;
 	cursor: pointer;
 }
+
+.autor-text {
+	color: #007BFF;
+}
+
+.small-text {
+	font-size: 12px;
+	color: #555;
+}
+
+.small-text2 {
+	font-size: 12px;
+	color: #fff;
+}
 </style>
 </head>
 
@@ -285,9 +299,11 @@ a {
 				<%
 				for (Retroalimentacion retro : retroalimentaciones) {
 				%>
-				<li class="comment-item"><strong><%=retro.getAutor()%></strong>:
-					<%=retro.getComentario()%> <br> Estado anterior: <%=retro.getEstadoAnterior()%>,
-					Estado nuevo: <%=retro.getEstadoNuevo()%></li>
+				<li class="comment-item"><strong class="autor-text"><%=retro.getAutor()%></strong>:
+					<%=retro.getComentario()%> <br> <span class="small-text2">Estado
+						anterior:</span> <span class="small-text"><%=retro.getEstadoAnterior()%></span>,
+					<span class="small-text2">Estado nuevo:</span> <span
+					class="small-text"><%=retro.getEstadoNuevo()%></span></li>
 				<%
 				}
 				%>
