@@ -95,7 +95,7 @@ input[type="submit"] {
 	<form action="CerrarSesion" method="get" class="logout-form">
 		<input type="submit" value="Cerrar Sesión" id="cerrarSesion">
 	</form>
-	<h2>Realizar una Asignación</h2>
+	<h2>Cambiar una Asignación de empleado</h2>
 
 	<form action="AsignarAsignacionController" method="post">
 		<label for="empleados">Seleccionar Empleado:</label> <select

@@ -8,16 +8,19 @@
 // Obtén el objeto Empleado de la sesión
 Empleado empleado = (Empleado) session.getAttribute("Empleado");
 
+//Verifica si el empleado está autenticado, de lo contrario, redirige a index.jsp
+if (empleado == null) {
+	response.sendRedirect("index.jsp");
+}
+
 // Lista de asignaciones
 List<Asignacion> asignaciones = (List<Asignacion>) session.getAttribute("asignaciones");
 
+//Lista de empleados
+List<Empleado> empleados = (List<Empleado>) session.getAttribute("empleados");
+
 // Verifica si el empleado es administrador
 boolean esAdmin = (empleado != null && empleado.getEs_admin() == 1);
-
-//Verifica si el empleado está autenticado, de lo contrario, redirige a index.jsp
-if (empleado == null) {
- response.sendRedirect("index.jsp");
-}
 %>
 
 <!DOCTYPE html>
@@ -162,7 +165,7 @@ a {
 		if (esAdmin) {
 		%>
 		<a href="altaEmpleado.jsp">Dar de alta un nuevo empleado</a> <a
-			href="asignarAsignacion.jsp">Realizar una asignación</a> <a
+			href="asignarAsignacion.jsp">Cambiar una asignación</a> <a
 			href="altaAsignacion.jsp">Dar de alta una nueva asignación</a> <a
 			href="altaRequerimiento.jsp">Dar de alta un nuevo requerimiento</a> <a
 			href="altaCasodeUso.jsp">Dar de alta un nuevo caso de uso</a>
@@ -180,6 +183,7 @@ a {
 		<h2>
 			Bienvenido,
 			<%=empleado.getNombreCompleto()%></h2>
+
 		<div class="card">
 			<h3>Contacto:</h3>
 			<p>
@@ -191,6 +195,37 @@ a {
 		</div>
 		<div class="card">
 			<h3>Asignaciones:</h3>
+			<%
+			if (esAdmin) {
+			%>
+			<div>
+				<form id="formEmpleadoSeleccionado" action="InicioSesion"
+					method="get">
+					<label for="selectEmpleado">Seleccionar Empleado:</label> <select
+						id="selectEmpleado" name="nombreEmpleadoSeleccionado"
+						onchange="this.form.submit()">
+						<%
+						for (Empleado emp : empleados) {
+							String selected = "";
+							if (session.getAttribute("empleadoSeleccionado") != null) {
+								model.Empleado empleadoSeleccionado = (model.Empleado) session.getAttribute("empleadoSeleccionado");
+								selected = emp.getNombreUsuario().equals(empleadoSeleccionado.getNombreUsuario()) ? "selected" : "";
+							} else {
+								selected = emp.getNombreUsuario().equals(empleado.getNombreUsuario()) ? "selected" : "";
+							}
+						%>
+						<option value="<%=emp.getNombreUsuario()%>" <%=selected%>>
+							<%=emp.getNombreCompleto()%>
+						</option>
+						<%
+						}
+						%>
+					</select>
+				</form>
+			</div>
+			<%
+}
+%>
 			<div class="table-container">
 				<table>
 					<tr>
