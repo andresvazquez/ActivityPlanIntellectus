@@ -119,10 +119,25 @@ h2, label {
 	border-radius: 5px;
 	cursor: pointer;
 }
+
+#cerrarSesion {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background-color: #ccc;
+	color: #000;
+	padding: 5px 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
 </style>
 </head>
 
 <body>
+	<form action="CerrarSesion" method="get">
+		<input type="submit" value="Cerrar Sesión" id="cerrarSesion">
+	</form>
 	<h2>Registro de Horas</h2>
 
 	<!-- Tarjeta para registrar horas -->
@@ -131,8 +146,8 @@ h2, label {
 		<form action="ControladorRegistroHoras" method="post">
 			<label for="horas">Horas a registrar (máx. 24):</label> <input
 				type="number" id="horas" name="horas" min="0" max="24" required
-				maxlength="2" style="width: 100px;"> <br> <input type="hidden"
-				name="id_asignacion" value="<%=id_asignacion%>">
+				maxlength="2" style="width: 100px;"> <br> <input
+				type="hidden" name="id_asignacion" value="<%=id_asignacion%>">
 			<button type="submit">Registrar</button>
 		</form>
 	</div>

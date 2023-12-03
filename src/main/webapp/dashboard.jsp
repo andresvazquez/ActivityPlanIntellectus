@@ -139,6 +139,18 @@ a {
 	overflow-y: auto !important;
 	overflow-x: auto !important;
 }
+
+#cerrarSesion {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background-color: #ccc;
+	color: #000;
+	padding: 5px 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
 </style>
 </head>
 
@@ -157,10 +169,14 @@ a {
 		<%
 		}
 		%>
-		
+
 	</div>
 
 	<div class="content">
+		<form action="CerrarSesion" method="get">
+			<input type="submit" value="Cerrar Sesión" id="cerrarSesion">
+		</form>
+
 		<h2>
 			Bienvenido,
 			<%=empleado.getNombreCompleto()%></h2>
