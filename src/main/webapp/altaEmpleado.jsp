@@ -19,7 +19,7 @@ body {
 	font-family: Arial, sans-serif;
 }
 
-form {
+form:not(.logout-form) {
 	background-color: #fff;
 	padding: 20px;
 	border-radius: 10px;
@@ -59,9 +59,24 @@ input[type="submit"] {
 .botones-container {
 	text-align: center;
 }
+
+#cerrarSesion {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background-color: #ccc;
+	color: #000;
+	padding: 5px 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
 </style>
 </head>
 <body>
+	<form action="CerrarSesion" method="get" class="logout-form">
+		<input type="submit" value="Cerrar Sesión" id="cerrarSesion">
+	</form>
 	<div>
 		<h2>Registro de Empleado</h2>
 		<form action="AltaEmpleado" method="post">
