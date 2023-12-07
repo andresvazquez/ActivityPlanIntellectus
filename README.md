@@ -43,7 +43,7 @@ Versión de Java: JDK 11 / Java SE 11.
 9. [Etapas del Proyecto](#etapas-del-proyecto)
 10. [Licencia](#licencia)
 
-## Requerimientos
+## Requerimientos
 
 ### Servidores y Paquetes Adicionales
 
