@@ -96,16 +96,69 @@ Versión de Java: JDK 11 / Java SE 11.
 
 - Ejecute las pruebas unitarias con JUnit 5 desde Eclipse.
 
-### Implementar en Producción (Local)
+## Implementar en Producción (Local) - desde un WAR
 
-1. **Exportar el Proyecto como Archivo WAR desde Eclipse:**
-   - En Eclipse, haga clic derecho en el proyecto y seleccione `Export`.
-   - Elija `WAR file` en `Web` y haga clic en `Next`.
-   - Seleccione la ubicación de destino y haga clic en `Finish`.
+### Paso 1: Instalación de Herramientas y Software
 
-2. **Desplegar el Archivo WAR en Apache Tomcat:**
-   - Copie el archivo WAR en el directorio `webapps` de su instalación de Apache Tomcat.
-   - Inicie o reinicie Apache Tomcat.
+#### 1. Java Development Kit (JDK) 11:
+   - Asegúrate de tener Java JDK 11 instalado. Puedes descargarlo desde [AdoptOpenJDK](https://adoptopenjdk.net/).
+   - Configura las variables de entorno `JAVA_HOME` y `PATH` para apuntar a tu instalación de JDK.
+
+#### 2. MySQL Workbench:
+   - Descarga e instala MySQL Workbench desde el sitio oficial de [MySQL](https://www.mysql.com/products/workbench/).
+
+#### 3. Apache Tomcat 8.5:
+   - Descarga Apache Tomcat 8.5 desde el sitio oficial de [Apache Tomcat](https://tomcat.apache.org/download-80.cgi).
+   - Descomprime el archivo descargado en un directorio de tu elección.
+
+### Paso 2: Configuración de la Base de Datos
+
+#### 1. MySQL Server:
+   - Asegúrate de que el servidor MySQL esté en ejecución.
+
+#### 2. MySQL Workbench:
+   - Abre MySQL Workbench y conéctate al servidor MySQL.
+
+#### 3. Ejecutar el Script SQL:
+   - Ejecuta el script `database-schema.sql` en MySQL Workbench para crear la base de datos y las tablas necesarias.
+
+### Paso 3: Configuración del Proyecto Eclipse
+
+#### 1. Importar Proyecto:
+   - Abre Eclipse y selecciona `File` > `Import`.
+   - Elige `General` > `Existing Projects into Workspace` y selecciona tu proyecto.
+
+#### 2. Configuración del WAR:
+   - Asegúrate de que el archivo `mysql-connector-java-x.x.x.jar` esté en la carpeta `WEB-INF/lib` de tu proyecto.
+
+### Paso 4: Exportar el Proyecto como WAR
+
+#### 1. Exportar el Proyecto:
+   - Selecciona tu proyecto en Eclipse.
+   - Haz clic derecho y selecciona `Export`.
+   - En la ventana de exportación, elige `WAR file` y sigue el asistente para exportar tu proyecto como un archivo WAR.
+
+### Paso 5: Despliegue en Apache Tomcat
+
+#### 1. Copiar el WAR:
+   - Copia el archivo WAR exportado en el directorio `webapps` de tu instalación de Apache Tomcat.
+
+#### 2. Iniciar Apache Tomcat:
+   - Abre una terminal y navega al directorio de Apache Tomcat.
+   - Ejecuta `./bin/startup.sh` para iniciar el servidor Tomcat.
+
+### Paso 6: Acceder a la Aplicación
+
+#### 1. Navegador Web:
+   - Abre tu navegador web y visita `http://localhost:8080/tu-nombre-de-archivo-war` para acceder a tu aplicación.
+
+### Paso 7: Detener Apache Tomcat
+
+#### 1. Detener Apache Tomcat:
+   - En la terminal, navega al directorio de Apache Tomcat.
+   - Ejecuta `./bin/shutdown.sh` para detener el servidor Tomcat.
+
+Con estos pasos, deberías poder ejecutar la aplicación web en Apache Tomcat. Asegúrate de que todos los pasos se completen sin errores y sigue estos pasos en el orden indicado.
 
 ### Implementar en la Nube (Heroku)
 
