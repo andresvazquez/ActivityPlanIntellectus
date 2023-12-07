@@ -17,11 +17,11 @@ if (empleado == null) {
 }
 
 // Obtén el id de la asignación desde los parámetros de la URL
-int id_asignacion=0;
-try{
-id_asignacion = Integer.parseInt(request.getParameter("id"));
-}catch(Exception e){
-	id_asignacion= (int)session.getAttribute("id_asignacion");
+int id_asignacion = 0;
+try {
+	id_asignacion = Integer.parseInt(request.getParameter("id"));
+} catch (Exception e) {
+	id_asignacion = (int) session.getAttribute("id_asignacion");
 }
 session.setAttribute("id_asignacion", id_asignacion);
 
@@ -121,18 +121,18 @@ select {
 	box-sizing: border-box;
 }
 
+td.long-field-cell {
+	white-space: pre-wrap;
+	word-wrap: break-word;
+	overflow-x: auto;
+	max-width: 300px;
+}
+
 .table-container table {
 	width: 100%;
 	table-layout: fixed;
 	border-collapse: collapse;
 	margin-top: 10px;
-}
-
-.long-field-cell {
-	white-space: pre-wrap;
-	max-height: 100px;
-	overflow-y: auto;
-	word-wrap: break-word;
 }
 
 table {
@@ -201,6 +201,31 @@ a {
 	text-decoration: underline; /* Subrayado */
 }
 
+#cerrarSesion {
+	position: absolute;
+	top: 10px;
+	right: 10px;
+	background-color: #ccc;
+	color: #000;
+	padding: 5px 10px;
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+}
+
+.autor-text {
+	color: #007BFF;
+}
+
+.small-text {
+	font-size: 12px;
+	color: #555;
+}
+
+.small-text2 {
+	font-size: 12px;
+	color: #fff;
+}
 </style>
 </head>
 
@@ -212,6 +237,9 @@ a {
 	</div>
 
 	<div class="content">
+		<form action="CerrarSesion" method="get">
+			<input type="submit" value="Cerrar Sesión" id="cerrarSesion">
+		</form>
 		<h2>
 			Bienvenido,
 			<%=empleado.getNombreCompleto()%></h2>
@@ -227,7 +255,8 @@ a {
 						<td class="long-field-cell"><%=asignacion.getDetalle()%></td>
 					</tr>
 					<tr>
-						<td><a href="<%= "detalleRequerimiento.jsp?id=" + asignacion.getId_req() %>">Requerimiento</a></td>
+						<td><a
+							href="<%="detalleRequerimiento.jsp?id=" + asignacion.getId_req()%>">Requerimiento</a></td>
 						<td class="long-field-cell"><%=BaseDeDatos.obtenerRequerimientoPorID(asignacion.getId_req()).getFolio()%></td>
 					</tr>
 					<tr>
@@ -235,7 +264,9 @@ a {
 						<td class="long-field-cell"><%=BaseDeDatos.obtenerRequerimientoPorID(asignacion.getId_req()).getDetalle()%></td>
 					</tr>
 					<tr>
-						<td><a href="<%= "detalleCasoDeUso.jsp?id=" + asignacion.getId_caso() %>">Caso de uso</a></td>
+						<td><a
+							href="<%="detalleCasoDeUso.jsp?id=" + asignacion.getId_caso()%>">Caso
+								de uso</a></td>
 						<td class="long-field-cell"><%=BaseDeDatos.obtenerCasoDeUsoPorID(asignacion.getId_caso()).getDetalle()%></td>
 					</tr>
 					<tr>
@@ -248,7 +279,7 @@ a {
 					</tr>
 					<tr>
 						<td>Horas</td>
-						<td><a href="<%= "registroHoras.jsp?id=" + id_asignacion %>"><%=BaseDeDatos.obtenerHorasRegistradasPorAsignacion(id_asignacion)%></a></td>
+						<td><a href="<%="registroHoras.jsp?id=" + id_asignacion%>"><%=BaseDeDatos.obtenerHorasRegistradasPorAsignacion(id_asignacion)%></a></td>
 					</tr>
 					<tr>
 						<td>Estado</td>
@@ -268,9 +299,11 @@ a {
 				<%
 				for (Retroalimentacion retro : retroalimentaciones) {
 				%>
-				<li class="comment-item"><strong><%=retro.getAutor()%></strong>:
-					<%=retro.getComentario()%> <br> Estado anterior: <%=retro.getEstadoAnterior()%>,
-					Estado nuevo: <%=retro.getEstadoNuevo()%></li>
+				<li class="comment-item"><strong class="autor-text"><%=retro.getAutor()%></strong>:
+					<%=retro.getComentario()%> <br> <span class="small-text2">Estado
+						anterior:</span> <span class="small-text"><%=retro.getEstadoAnterior()%></span>,
+					<span class="small-text2">Estado nuevo:</span> <span
+					class="small-text"><%=retro.getEstadoNuevo()%></span></li>
 				<%
 				}
 				%>
