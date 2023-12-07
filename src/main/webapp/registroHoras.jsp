@@ -9,7 +9,7 @@
 <%
 // Obtén el ID de la asignación desde los parámetros de la URL
 int id_asignacion = Integer.parseInt(request.getParameter("id"));
-System.out.println(id_asignacion);
+
 // Formato de fecha para mostrar en las consultas
 SimpleDateFormat dateFormat = new SimpleDateFormat("dd/MM/yyyy", Locale.getDefault());
 

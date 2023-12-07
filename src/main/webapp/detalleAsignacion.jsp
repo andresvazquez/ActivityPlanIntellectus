@@ -25,7 +25,6 @@ try {
 }
 session.setAttribute("id_asignacion", id_asignacion);
 
-System.out.println(id_asignacion);
 
 // Obtén la asignación correspondiente al id
 Asignacion asignacion = model.BaseDeDatos.obtenerAsignacionPorId(id_asignacion);
